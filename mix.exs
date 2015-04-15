@@ -4,7 +4,7 @@ defmodule Bake.Mixfile do
 
   def project, do: [
     app: :bake,
-    escript: [main_module: Main],
+    escript: [main_module: Main, name: "bake", path: "/usr/local/bin/bake"],
     version: "0.0.1",
     elixir: "~> 1.0",
     deps: deps
