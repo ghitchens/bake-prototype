@@ -11,17 +11,18 @@ If your user has write access to /usr/local/bin, you can simply:
 
     mix escript.build
 
-If this gives you permissions error, either grant yourself group or user write permission access to /usr/local/bin, or add sudo before the command like this:
+If this gives you permissions error, either grant yourself group or user write permission access to /usr/local/bin, or run it as sudo.
 
-    sudo mix escript.build
+## Configuration
 
-## Usage
+In order to use `bake`, you will first need to add a `Bakefile` to your project, which looks like this:
 
-Add a __Bakefile__ to your project, which looks like this:
+```Makefile
+project_type = nerves
+sdk_config = alix
+device_id = my_project_id
+nerves_target = my_project_id
+```
 
-  project_type = nerves
-  sdk_config = alix
-  DEVICE_ID = my_project_id
-  NERVES_TARGET = my_project_id
+Bakefiles are configuration files for the bake process, and follow Makefile syntax rules.   See Bakeware.io for more information about the format and use of this file.
 
-The file is makefile-syntax.  See Bakeware.io for more information about the format and use of this file.
