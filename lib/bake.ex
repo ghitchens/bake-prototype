@@ -28,12 +28,12 @@ defmodule Bake do
 
   def build(args \\ "") do
     Logger.info "building project"
-    rcmd "bake-build #{project_id} $args"
+    rcmd "bake-build #{project_id} #{args}"
   end
   
   def rsync(from, to) do
     Logger.debug "syncing '#{from}' to '#{to}'"
-    System.cmd "rsync", [ "-rltDz", "-e", "ssh -i #{@bakeinfo_file}", from, to ]
+    System.cmd "rsync", [ "-rltDz", "-e", "ssh -i #{@bakeinfo_file} -o StrictHostKeyChecking=no", from, to ]
   end
   
   def remote_project_path do
@@ -47,9 +47,8 @@ defmodule Bake do
   @spec rcmd(String.t) :: Collectible.t
   def rcmd(remote_cmd) do 
     System.cmd "ssh", 
-      [remote_login, "-i", @bakeinfo_file, "-C", "#{remote_cmd}"],
-      stderr_to_stdout: true,
-      into: IO.stream(:stdio, :line)
+      [remote_login, "-i", @bakeinfo_file, "-o", "StrictHostKeyChecking=no", "-C", "#{remote_cmd}"],
+      stderr_to_stdout: true, into: IO.stream(:stdio, :line)
   end
 
   def project_id, do: Process.get(:project_id)
