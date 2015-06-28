@@ -6,3 +6,4 @@
 - built-in burn functionality supports osX devices
 - burn now determines project_id and filename from Bakefile
 - excluded _ directories like _images from push
+- added simple status mechanism
