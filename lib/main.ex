@@ -1,13 +1,57 @@
 defmodule Main do
 
+  require Logger
+
   def main([]), do: main(["help"])
-  def main(["help"]), do: Cmd.Help.run
+  def main(["help"]), do: Help.help
+  def main(cmds) do
+    try do
+      parse(Context.initialize, cmds)
+    rescue
+      e in RuntimeError -> e
+      Logger.error "#{e.message}"
+    end
+  end
+    
+  def parse(context, [cmd | rest]) do
+    handle context, :erlang.binary_to_atom(String.downcase(cmd), :utf8), rest
+  end
 
-  def main(["build"]), do: Cmd.Build.run
+  def parse(context, []) do
+    Logger.debug "completed all tasks"
+  end
 
-  def main(other) do
-		cmd = Enum.join(other, " ")
-		IO.write "invalid or malformed command: #{cmd}\n"
+  ## command handlers
+
+  @local_cmds_0 [ :push, :detach ]
+  @local_cmds_1 [ :pull, :burn, :build ]
+  @remote_cmds  [ :start, :stop, :watch, :status, :clean ]
+
+  defp handle(ctx, :build, [arg | rest]) do
+    parse(ctx, ["push", "start", "watch", "pull", arg] ++ rest)
+  end
+  
+  defp handle(ctx, :detach, rest) do
+    parse(ctx, ["push", "start"] ++ rest)
+  end
+
+  defp handle(context, cmd, rest) when cmd in @local_cmds_0 do
+    Logger.info "#{cmd}:"
+    apply(Local, cmd, [context]) |> parse(rest)
+  end
+
+  defp handle(context, cmd, [arg | rest]) when cmd in @local_cmds_1 do
+    Logger.info "#{cmd} #{arg}:"
+    apply(Local, cmd, [context, arg]) |> parse(rest)
+  end
+  
+  defp handle(context, cmd, rest) when cmd in @remote_cmds do
+    Logger.info "#{cmd} (remote):"
+    Remote.bake_cmd(context, cmd) |> parse (rest)
+  end
+  
+  defp handle(_context, cmd, _rest) do
+    raise "unknown or malformed command: #{cmd}"
 	end
 
 end
