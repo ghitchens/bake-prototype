@@ -11,6 +11,7 @@ bake [cmds] - cook up cross-compiled firmware using the bakeware.io service
   bake start            begin a build of code on server and detach
   bake stop             stop a bake that is currently in progress
   bake status           show the status of a build
+  bake peek             view a small portion of the bake log
   bake watch            watch a build until while it completes
   bake clean            remove a project directory from the server
   bake pull <ext>       sync-in built firmware file or media image

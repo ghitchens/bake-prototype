@@ -5,7 +5,7 @@ defmodule Bake.Mixfile do
   def project, do: [
     app: :bake,
     escript: [main_module: Main, name: "bake", path: "/usr/local/bin/bake"],
-    version: "0.1.2",
+    version: "0.2.0",
     elixir: "~> 1.0",
     deps: deps
   ]
@@ -15,6 +15,7 @@ defmodule Bake.Mixfile do
   ]
 
   defp deps, do: [
+    {:conform, "~> 0.14"},
 		{:exjsx, "~> 3.0.0" },
     {:uuid, "~> 1.0.0" },
 		{:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.0"},

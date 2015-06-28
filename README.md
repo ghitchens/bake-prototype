@@ -1,23 +1,36 @@
 Bake
 ====
 
-__Bake__ is a command line tool which automates the process of bulding cross-compiled firmware using the bakeware.io cross compile toolchain. Getting started with Bake is easy:
+`bake` is a command line tool which automates the process of bulding cross-compiled firmware using the [bakeware.io](http://bakeware.io) server-based cross compiler.
+
+Getting started with Bake is easy:
 
 1. Install the `bake` command line utility
 2. Make sure your project has a `Bakefile`
 3. type `bake build` and sit back and watch things build
 
-## Installing the utiltiy
+# Installing the `bake` CLI
 
-The mix.exs script installs the executable as as /usr/local/bin/bake.
+You can always find a [recent stable build of `bake`](http://bakeware.io/bake) pre-built on the [bakeware.io](http://bakeware.io) server.   Since `bake` is based on Erlang, you need to have installed Erlang (R17+) on your system in order for it to run.       
 
-If your user has write access to /usr/local/bin, you can simply:
+Installing it is just a matter of putting the single file somewhere useful, like this:
+
+    curl bakeware.io/bake > /usr/local/bin/bake
+    chmod +x /usr/local/bin/bake
+    
+Now, you're ready to do some baking!
+
+### Building `bake` from source (advanced)
+
+You can build bake from source, if you have access to the source respository.  You will need to have a [working Elixir environment](http://elixir-lang.org/install.html) on your machine.
+
+The mix.exs script installs the executable as as /usr/local/bin/bake.   If your user has write access to /usr/local/bin, you can simply:
 
     mix escript.build
 
 If this gives you permissions error, either grant yourself group or user write permission access to /usr/local/bin, or run it as sudo.
 
-## Configuration
+## Configuring a `Bakefile`
 
 In order to use `bake`, you will first need to add a `Bakefile` to your project, which looks like this:
 
@@ -30,7 +43,7 @@ nerves_target = my_project_id
 
 Bakefiles are configuration files for the bake process, and follow Makefile syntax rules.   See Bakeware.io for more information about the format and use of this file.
 
-## Using `bake`
+## Using `bake` to build firmware
 
 Once your project has a properly configured `Bakefile`, you are ready to do some baking.   Here are some examples of how to use bake:
 

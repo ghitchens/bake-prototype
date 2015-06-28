@@ -17,15 +17,15 @@ defmodule Main do
     handle context, :erlang.binary_to_atom(String.downcase(cmd), :utf8), rest
   end
 
-  def parse(context, []) do
-    Logger.debug "completed all tasks"
+  def parse(_context, []) do
+    Logger.debug "finished parsing & executing all tasks"
   end
 
   ## command handlers
 
   @local_cmds_0 [ :push, :detach ]
   @local_cmds_1 [ :pull, :burn, :build ]
-  @remote_cmds  [ :start, :stop, :watch, :status, :clean ]
+  @remote_cmds  [ :start, :stop, :watch, :peek, :status, :clean ]
 
   defp handle(ctx, :build, [arg | rest]) do
     parse(ctx, ["push", "start", "watch", "pull", arg] ++ rest)
@@ -36,17 +36,17 @@ defmodule Main do
   end
 
   defp handle(context, cmd, rest) when cmd in @local_cmds_0 do
-    Logger.info "#{cmd}:"
+    Logger.debug "#{cmd}"
     apply(Local, cmd, [context]) |> parse(rest)
   end
 
   defp handle(context, cmd, [arg | rest]) when cmd in @local_cmds_1 do
-    Logger.info "#{cmd} #{arg}:"
+    Logger.debug "#{cmd} #{arg}"
     apply(Local, cmd, [context, arg]) |> parse(rest)
   end
   
   defp handle(context, cmd, rest) when cmd in @remote_cmds do
-    Logger.info "#{cmd} (remote):"
+    Logger.debug "#{cmd} (remote):"
     Remote.bake_cmd(context, cmd) |> parse (rest)
   end
   

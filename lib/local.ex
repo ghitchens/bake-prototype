@@ -8,12 +8,13 @@ defmodule Local do
   
   require Logger
 
-  def push(ctx), do: Remote.sync_out(ctx, ".")
+  def push(ctx), do: Remote.push(ctx)
 
-  def pull(ctx, "-a"), do:  Remote.sync_in(ctx, "_images")
+  def pull(ctx, "-a"), do: Remote.sync_in(ctx, "_images")
   def pull(ctx, ext) do
     lext = String.downcase ext
-    Remote.sync_in ctx, "_images/*.#{lext}"
+    File.mkdir_p "_images"
+    Remote.sync_in ctx, "_images/*.#{lext}", "_images/"
     ctx   
   end
 

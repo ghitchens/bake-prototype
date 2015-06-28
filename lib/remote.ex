@@ -12,17 +12,26 @@ defmodule Remote do
   """
 
   def bake_cmd(ctx, cmd) do
-    rexec ctx, "bake-#{cmd} #{ctx.project_id}"
+    rexec ctx, "bake-#{cmd} #{ctx.project_uuid}"
     ctx
   end
 
+  @doc """
+  Push a copy of the source tree to the server.   Don't push the _images
+  directory.   In the future, we might be able to specify excluded stuff
+  """
+  def push(ctx) do
+    System.cmd "rsync", [ "-rltDz", "--exclude", "/_*", "-e",
+  			"ssh -qi #{ctx.key_file} -o StrictHostKeyChecking=no", ".", 
+        (rpath(ctx) <> "/") ]
+    ctx
+  end
+  
   def sync_in(ctx, from, to \\ ".") do
-    sync(ctx, "#{rpath(ctx)}/#{from}", to)
-    ctx
-  end
-
-  def sync_out(ctx, from, to \\ "") do
-    sync(ctx, from, "#{rpath(ctx)}/#{to}")
+    Logger.info "sync_in '#{from}' to '#{to}'"
+      System.cmd "rsync", [ "-rltDz", "-e",
+            			"ssh -qi #{ctx.key_file} -o StrictHostKeyChecking=no",
+                  "#{rpath(ctx)}/#{from}", to ]
     ctx
   end
 
@@ -31,21 +40,14 @@ defmodule Remote do
 
   @spec rexec(Map.t, String.t) :: Collectible.t
   defp rexec(ctx, remote_request) do 
-    System.cmd "ssh", [rlogin(ctx), "-i", ctx.key_file, "-o",
+    System.cmd "ssh", [rlogin(ctx), "-qi", ctx.key_file, "-o",
   	                   "StrictHostKeyChecking=no", "-C", remote_request],
                 stderr_to_stdout: true, into: IO.stream(:stdio, :line)
     ctx
   end
 
-  defp sync(ctx, from, to) do
-    Logger.debug "syncing '#{from}' to '#{to}'"
-    System.cmd "rsync", [ "-rltDz", "-e",
-  			"ssh -i #{ctx.key_file} -o StrictHostKeyChecking=no",
-  												from, to ]
-  end
-
   defp rpath(ctx) do
-    "#{rlogin(ctx)}:projects/#{ctx.project_id}"
+    "#{rlogin(ctx)}:projects/#{ctx.project_uuid}"
   end
 
   defp rlogin(ctx) do

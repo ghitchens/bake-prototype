@@ -2,15 +2,16 @@ defmodule Burn do
   
   require Logger
   
-  def burn(context, device_id) do
-    image_file = "_images/foo.img"
+  def burn(ctx, device_id) do
+    project_id = ctx.project_id
+    image_file = "_images/#{project_id}.img"
     media = Path.join "/dev", device_id
     umount_media media
     burn_file_to_media image_file, media
     Logger.info "waiting for bits to settle before eject"
     :timer.sleep 3000
     :ok = eject_media media
-    context
+    ctx
   end
 
 	def show_disk_options do
