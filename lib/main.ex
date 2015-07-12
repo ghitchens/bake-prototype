@@ -11,6 +11,7 @@ defmodule Main do
       e in RuntimeError -> e
       Logger.error "#{e.message}"
     end
+    Logger.flush
   end
     
   def parse(context, [cmd | rest]) do
@@ -23,17 +24,17 @@ defmodule Main do
 
   ## command handlers
 
-  @local_cmds_0 [ :push, :detach ]
+  @local_cmds_0 [ :push ]
   @local_cmds_1 [ :pull, :burn ]
-  @remote_cmds  [ :build, :start, :stop, :watch, :peek, :status, :clean ]
+  @remote_cmds  [ :start, :stop, :watch, :peek, :status, :clean ]
 
-  # defp handle(ctx, :build, [arg | rest]) do
-  #   parse(ctx, ["push", "start", "watch", "pull", arg] ++ rest)
-  # end
+  defp handle(ctx, :build, [arg | rest]) do
+    parse(ctx, ["push", "start", "watch", "pull", arg] ++ rest)
+  end
   
-  # defp handle(ctx, :detach, rest) do
-  #   parse(ctx, ["push", "start"] ++ rest)
-  # end
+  defp handle(ctx, :detach, rest) do
+    parse(ctx, ["push", "start"] ++ rest)
+  end
 
   defp handle(context, cmd, rest) when cmd in @local_cmds_0 do
     Logger.debug "#{cmd}"

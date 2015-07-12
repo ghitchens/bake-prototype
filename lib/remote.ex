@@ -42,7 +42,7 @@ defmodule Remote do
   @spec rexec(Map.t, String.t) :: Collectible.t
   defp rexec(ctx, remote_request) do 
     ssh_auth_sock = System.get_env("SSH_AUTH_SOCK")
-    System.cmd "ssh", [rlogin(ctx), "-AT", 
+    System.cmd "ssh", [rlogin(ctx), "-ATq", 
                        "-o", "StrictHostKeyChecking=no", 
                        "-C", remote_request],
                 env: [{"SSH_AUTH_SOCK", ssh_auth_sock}],

@@ -30,6 +30,7 @@ defmodule Context do
       Logger.debug "found existing project: #{puuid}"
       puuid
     else
+      uuid = UUID.uuid1
       File.write! @bakeinfo_file, (uuid <> "\n")
       uuid
     end
