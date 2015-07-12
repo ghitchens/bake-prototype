@@ -22,7 +22,7 @@ defmodule Remote do
   """
   def push(ctx) do
     System.cmd "rsync", [ "-rltDz", "--exclude", "/_*", "-e",
-  			"ssh -qi #{ctx.key_file} -o StrictHostKeyChecking=no", ".", 
+  			"ssh -Aq -o StrictHostKeyChecking=no", ".", 
         (rpath(ctx) <> "/") ]
     ctx
   end
@@ -30,21 +30,27 @@ defmodule Remote do
   def sync_in(ctx, from, to \\ ".") do
     Logger.info "sync_in '#{from}' to '#{to}'"
       System.cmd "rsync", [ "-rltDz", "-e",
-            			"ssh -qi #{ctx.key_file} -o StrictHostKeyChecking=no",
+            			"ssh -Aq -o StrictHostKeyChecking=no",
                   "#{rpath(ctx)}/#{from}", to ]
     ctx
   end
 
   ############################### helpers ##################################
 
+  
 
   @spec rexec(Map.t, String.t) :: Collectible.t
   defp rexec(ctx, remote_request) do 
-    System.cmd "ssh", [rlogin(ctx), "-qi", ctx.key_file, "-o",
-  	                   "StrictHostKeyChecking=no", "-C", remote_request],
-                stderr_to_stdout: true, into: IO.stream(:stdio, :line)
+    ssh_auth_sock = System.get_env("SSH_AUTH_SOCK")
+    System.cmd "ssh", [rlogin(ctx), "-AT", 
+                       "-o", "StrictHostKeyChecking=no", 
+                       "-C", remote_request],
+                env: [{"SSH_AUTH_SOCK", ssh_auth_sock}],
+                stderr_to_stdout: true, 
+                into: IO.stream(:stdio, :line)
     ctx
-  end
+
+	end
 
   defp rpath(ctx) do
     "#{rlogin(ctx)}:projects/#{ctx.project_uuid}"

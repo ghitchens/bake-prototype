@@ -6,8 +6,7 @@ defmodule Context do
   @bakeinfo_file ".bakeinfo"
   @build_server "swirl.telo.io"
   @build_user "build"
-  @identity_uri "http://#{@build_server}/public_identity" 
-  
+
   @doc """
   Sets up the context for a series of bake commands by reading the bakeinfo
   file (if it exists) or creating one (if it doesn't)
@@ -31,12 +30,7 @@ defmodule Context do
       Logger.debug "found existing project: #{puuid}"
       puuid
     else
-      Logger.debug "setting up initial project identity/cache"
-      response = HTTPotion.get @identity_uri
-      200 = response.status_code
-      uuid = UUID.uuid1()
-      File.write! @bakeinfo_file, (uuid <> "\n" <> response.body)
-      File.chmod @bakeinfo_file, 0o600
+      File.write! @bakeinfo_file, (uuid <> "\n")
       uuid
     end
     
