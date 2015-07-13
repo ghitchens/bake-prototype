@@ -48,7 +48,7 @@ defmodule Main do
   
   defp handle(context, cmd, rest) when cmd in @remote_cmds do
     Logger.debug "#{cmd} (remote):"
-    Remote.bake_cmd(context, cmd) |> parse (rest)
+    Remote.oven(context, cmd) |> parse (rest)
   end
   
   defp handle(_context, cmd, _rest) do

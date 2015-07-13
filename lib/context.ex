@@ -36,8 +36,7 @@ defmodule Context do
     end
     
     Dict.merge bakefile_map, [ 
-      project_uuid: project_uuid, build_server: @build_server, 
-      build_user: @build_user, key_file: @bakeinfo_file
+      project_uuid: project_uuid, build_server: @build_server
     ]
 
   end
