@@ -15,11 +15,11 @@ defmodule Bake.Mixfile do
   ]
 
   defp deps, do: [
-    {:conform, "~> 0.14"},
-		{:exjsx, "~> 3.0.0" },
-    {:uuid, "~> 1.0.0" },
-		{:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.0"},
-		{:httpotion, "~> 0.2.4"}
+    {:conform, "~> 0.17.0"},
+		{:exjsx, "~> 3.2.0" },
+    {:uuid, "~> 1.0.1" },
+		{:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
+		{:httpotion, "~> 2.1.0"}
   ]
 
 end
